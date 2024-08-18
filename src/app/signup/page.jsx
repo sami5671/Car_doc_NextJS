@@ -3,12 +3,36 @@
 import SocialSignIn from "@/components/Shared/SocialSignIn";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
+  const router = useRouter();
+
   // =================================================================
-  const handleSignUp = () => {
-    console.log("click on SignUp");
+  const handleSignUp = async (event) => {
+    event.preventDefault();
+    const newUser = {
+      name: event.target.name.value,
+      email: event.target.email.value,
+      password: event.target.password.value,
+    };
+
+    const resp = await fetch("http://localhost:3000//signup/api", {
+      method: "POST",
+      body: JSON.stringify(newUser),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (resp.status === 200) {
+      event.target.reset();
+      toast.success("Sign Up Success");
+      router.push("/");
+    } else {
+      toast.error("Sign Up Error");
+    }
   };
   // =================================================================
   return (
